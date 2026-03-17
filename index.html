@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Death corridor</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser-arcade-physics.min.js"></script>
+
+</head>
+<script>
+    const config = {
+        type: Phaser.AUTO, // Automaticky vybere WebGL nebo Canvas
+        width: 800,
+        height: 600,
+        physics: {
+            default: 'arcade', // Zapne fyziku (pro kolize a pohyb)
+            arcade: { debug: false }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    const game = new Phaser.Game(config);
+
+    function preload() {
+        // Načtení pozadí
+        this.load.image('ring', 'storage/welcome/ring-background.png');
+
+        // Načtení spritesheetu (Phaser ho sám rozřeže na políčka!)
+        this.load.spritesheet('boxer', 'storage/welcome/boxer1.png', {
+            frameWidth: 351,
+            frameHeight: 500
+        });
+    }
+
+    let player;
+    let cursors;
+
+    function create() {
+        // 1. Vložíme pozadí (vycentrované)
+        this.add.image(400, 300, 'ring').setDisplaySize(800, 600);
+
+        // 2. Vytvoříme animaci z našeho pásu
+        this.anims.create({
+            key: 'punch_anim',
+            frames: this.anims.generateFrameNumbers('boxer', { start: 0, end: 3 }),
+            frameRate: 8,
+            repeat: -1 // -1 znamená nekonečná smyčka
+        });
+
+        // 3. Vytvoříme boxera jako objekt s fyzikou
+        player = this.physics.add.sprite(400, 300, 'boxer');
+        player.play('punch_anim'); // Spustíme animaci
+        player.setScale(0.5);      // Zmenšíme ho na polovinu
+        player.setCollideWorldBounds(true); // Nepustí ho z obrazovky
+
+        // 4. Nastavení klávesnice
+        cursors = this.input.keyboard.createCursorKeys();
+    }
+
+    function update() {
+        // Jednoduchý pohyb
+        if (cursors.left.isDown) {
+            player.setVelocityX(-160);
+        } else if (cursors.right.isDown) {
+            player.setVelocityX(160);
+        } else {
+            player.setVelocityX(0);
+        }
+
+        if (cursors.up.isDown) {
+            player.setVelocityY(-160);
+        } else if (cursors.down.isDown) {
+            player.setVelocityY(160);
+        } else {
+            player.setVelocityY(0);
+        }
+    }
+</script>
+<body>
+
+</body>
+</html>
