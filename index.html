@@ -2,87 +2,51 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Death corridor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Death Corridor - Full Graphics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser-arcade-physics.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap');
 
+        .jacquard-12-regular {
+            font-family: "Jacquard 12", system-ui;
+        }
+
+        body {
+            margin: 0;
+            background-color: #000;
+            overflow: hidden;
+        }
+    </style>
 </head>
-<script>
-    const config = {
-        type: Phaser.AUTO, // Automaticky vybere WebGL nebo Canvas
-        width: 800,
-        height: 600,
-        physics: {
-            default: 'arcade', // Zapne fyziku (pro kolize a pohyb)
-            arcade: { debug: false }
-        },
-        scene: {
-            preload: preload,
-            create: create,
-            update: update
-        }
-    };
-
-    const game = new Phaser.Game(config);
-
-    function preload() {
-        // Načtení pozadí
-        this.load.image('ring', 'storage/welcome/ring-background.png');
-
-        // Načtení spritesheetu (Phaser ho sám rozřeže na políčka!)
-        this.load.spritesheet('boxer', 'storage/welcome/boxer1.png', {
-            frameWidth: 351,
-            frameHeight: 500
-        });
-    }
-
-    let player;
-    let cursors;
-
-    function create() {
-        // 1. Vložíme pozadí (vycentrované)
-        this.add.image(400, 300, 'ring').setDisplaySize(800, 600);
-
-        // 2. Vytvoříme animaci z našeho pásu
-        this.anims.create({
-            key: 'punch_anim',
-            frames: this.anims.generateFrameNumbers('boxer', { start: 0, end: 3 }),
-            frameRate: 8,
-            repeat: -1 // -1 znamená nekonečná smyčka
-        });
-
-        // 3. Vytvoříme boxera jako objekt s fyzikou
-        player = this.physics.add.sprite(400, 300, 'boxer');
-        player.play('punch_anim'); // Spustíme animaci
-        player.setScale(0.5);      // Zmenšíme ho na polovinu
-        player.setCollideWorldBounds(true); // Nepustí ho z obrazovky
-
-        // 4. Nastavení klávesnice
-        cursors = this.input.keyboard.createCursorKeys();
-    }
-
-    function update() {
-        // Jednoduchý pohyb
-        if (cursors.left.isDown) {
-            player.setVelocityX(-160);
-        } else if (cursors.right.isDown) {
-            player.setVelocityX(160);
-        } else {
-            player.setVelocityX(0);
-        }
-
-        if (cursors.up.isDown) {
-            player.setVelocityY(-160);
-        } else if (cursors.down.isDown) {
-            player.setVelocityY(160);
-        } else {
-            player.setVelocityY(0);
-        }
-    }
-</script>
 <body>
 
+<main id="menu" class="relative h-screen w-screen overflow-hidden">
+    <img src="storage/welcome/welcomePage.png" alt="monster" class="w-full h-full object-cover">
+
+    <div class="absolute inset-0 flex items-center justify-center">
+        <div class="relative flex items-center justify-center">
+            <img src="storage/welcome/panel.png" class="h-[600px] w-[800px]" alt="panel"/>
+
+            <div class="absolute top-20 inset-0 flex flex-col items-center justify-center">
+                <h1 class="text-7xl text-red-800 jacquard-12-regular leading-none text-center mb-[-200px]">
+                    Death <br> Corridor
+                </h1>
+
+                <a href="#" id="start-btn" class="group relative flex items-center justify-center active:scale-95 no-underline">
+                    <img src="storage/welcome/buttonStart.png" alt="Start" class="w-[350px]">
+                    <span class="absolute jacquard-12-regular text-5xl text-red-800 mb-[-20px]">Start</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="game-container"></div>
+
+<script src="game.js">
+
+</script>
 </body>
 </html>
